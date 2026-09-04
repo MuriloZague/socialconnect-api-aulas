@@ -43,7 +43,7 @@ public class BeneficiarioService {
     // Conversões Entity <-> DTO
     private BeneficiarioDTO toDTO(Beneficiario entity) {
         return new BeneficiarioDTO(
-                entity.getId(),
+                entity.getIdBeneficiario(),
                 entity.getNome(),
                 entity.getCpf(),
                 entity.getTelefone(),
@@ -55,7 +55,7 @@ public class BeneficiarioService {
 
     private Beneficiario toEntity(BeneficiarioDTO dto) {
         return Beneficiario.builder()
-                .id(dto.idBeneficiario())
+                .idBeneficiario(dto.idBeneficiario())
                 .nome(dto.nome())
                 .cpf(dto.cpf())
                 .telefone(dto.telefone())
