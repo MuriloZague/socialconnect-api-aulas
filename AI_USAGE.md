@@ -18,7 +18,7 @@ Para cada aula ou entrega, registre abaixo:
 
 | Data | Aula | Ferramenta | Prompt (resumo) | Uso da saída |
 |------|------|------------|-----------------|--------------|
-| _dd/mm/aaaa_ | _Aula XX_ | _ex: ChatGPT_ | _ex: "Como injetar dependência via construtor no Spring?"_ | _ex: "Adaptei o exemplo ao meu Service"_ |
+| 04/09/2026 | Aula 04 | Claude | "Gere 3 exemplos de JSONs válidos do recurso Beneficiario com nomes e CPFs fictícios para testar a rota POST no Swagger." | Copiado integralmente e colado na interface do Swagger UI para testar o salvamento no banco de dados. |
 
 ---
 
