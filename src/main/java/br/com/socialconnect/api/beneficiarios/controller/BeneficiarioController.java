@@ -1,12 +1,17 @@
 package br.com.socialconnect.api.beneficiarios.controller;
 
-import br.com.socialconnect.api.beneficiarios.dto.BeneficiarioDTO;
+import br.com.socialconnect.api.beneficiarios.dto.BeneficiarioPatchDTO;
+import br.com.socialconnect.api.beneficiarios.dto.BeneficiarioRequestDTO;
+import br.com.socialconnect.api.beneficiarios.dto.BeneficiarioResponseDTO;
 import br.com.socialconnect.api.beneficiarios.service.BeneficiarioService;
+import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/beneficiarios")
@@ -18,27 +23,45 @@ public class BeneficiarioController {
         this.service = service;
     }
 
-    // GET /api/v1/beneficiarios -> 200 OK
+    // GET com paginação e filtros opcionais
     @GetMapping
-    public ResponseEntity<List<BeneficiarioDTO>> listarTodos() {
-        return ResponseEntity.ok(service.listarTodos());
+    public ResponseEntity<Page<BeneficiarioResponseDTO>> listar(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String cpf,
+            @PageableDefault(size = 10, sort = "nome") Pageable pageable) {
+        return ResponseEntity.ok(service.listar(nome, cpf, pageable));
     }
 
-    // GET /api/v1/beneficiarios/{idBeneficiario} -> 200 OK
     @GetMapping("/{idBeneficiario}")
-    public ResponseEntity<BeneficiarioDTO> buscarPorId(@PathVariable Long idBeneficiario) {
+    public ResponseEntity<BeneficiarioResponseDTO> buscarPorId(@PathVariable Long idBeneficiario) {
         return ResponseEntity.ok(service.buscarPorId(idBeneficiario));
     }
 
-    // POST /api/v1/beneficiarios -> 201 Created + Location
+    // POST -> 201 Created + Location
     @PostMapping
-    public ResponseEntity<BeneficiarioDTO> salvar(@RequestBody BeneficiarioDTO dto) {
-        BeneficiarioDTO salvo = service.salvar(dto);
+    public ResponseEntity<BeneficiarioResponseDTO> criar(@Valid @RequestBody BeneficiarioRequestDTO dto) {
+        BeneficiarioResponseDTO salvo = service.criar(dto);
         URI location = URI.create("/api/v1/beneficiarios/" + salvo.idBeneficiario());
         return ResponseEntity.created(location).body(salvo);
     }
 
-    // DELETE /api/v1/beneficiarios/{idBeneficiario} -> 204 No Content
+    // PUT (substituição total)
+    @PutMapping("/{idBeneficiario}")
+    public ResponseEntity<BeneficiarioResponseDTO> atualizar(
+            @PathVariable Long idBeneficiario,
+            @Valid @RequestBody BeneficiarioRequestDTO dto) {
+        return ResponseEntity.ok(service.atualizar(idBeneficiario, dto));
+    }
+
+    // PATCH (atualização parcial)
+    @PatchMapping("/{idBeneficiario}")
+    public ResponseEntity<BeneficiarioResponseDTO> atualizarParcial(
+            @PathVariable Long idBeneficiario,
+            @RequestBody BeneficiarioPatchDTO dto) {
+        return ResponseEntity.ok(service.atualizarParcial(idBeneficiario, dto));
+    }
+
+    // DELETE -> 204 No Content
     @DeleteMapping("/{idBeneficiario}")
     public ResponseEntity<Void> deletar(@PathVariable Long idBeneficiario) {
         service.deletar(idBeneficiario);
