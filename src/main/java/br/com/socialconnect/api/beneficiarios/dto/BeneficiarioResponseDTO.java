@@ -2,8 +2,8 @@ package br.com.socialconnect.api.beneficiarios.dto;
 
 import java.time.LocalDate;
 
-// Record é imutável, conciso e ideal para DTOs no Java 21+
-public record BeneficiarioDTO(
+// DTO de SAÍDA: inclui campos gerados pelo servidor
+public record BeneficiarioResponseDTO(
         Long idBeneficiario,
         String nome,
         String cpf,
