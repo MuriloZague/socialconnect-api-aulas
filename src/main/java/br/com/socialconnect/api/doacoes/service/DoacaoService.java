@@ -9,12 +9,11 @@ import br.com.socialconnect.api.doacoes.repository.DoacaoRepository;
 import br.com.socialconnect.api.doacoes.repository.DoacaoSpecifications;
 import br.com.socialconnect.api.doadores.model.Doador;
 import br.com.socialconnect.api.doadores.repository.DoadorRepository;
+import br.com.socialconnect.api.exception.RecursoNaoEncontradoException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 
@@ -81,21 +80,19 @@ public class DoacaoService {
     @Transactional
     public void deletar(Long idDoacao) {
         if (!doacaoRepository.existsById(idDoacao)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Doação não encontrada: " + idDoacao);
+            throw new RecursoNaoEncontradoException("Doação não encontrada: " + idDoacao);
         }
         doacaoRepository.deleteById(idDoacao);
     }
 
     private Doacao buscarEntidade(Long idDoacao) {
         return doacaoRepository.findById(idDoacao)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Doação não encontrada: " + idDoacao));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Doação não encontrada: " + idDoacao));
     }
 
     private Doador buscarDoador(Long idDoador) {
         return doadorRepository.findById(idDoador)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Doador não encontrado: " + idDoador));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Doador não encontrado: " + idDoador));
     }
 
     private DoacaoResponseDTO toResponseDTO(Doacao d) {

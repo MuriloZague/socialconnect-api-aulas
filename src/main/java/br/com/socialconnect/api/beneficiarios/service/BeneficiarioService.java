@@ -5,11 +5,11 @@ import br.com.socialconnect.api.beneficiarios.dto.BeneficiarioRequestDTO;
 import br.com.socialconnect.api.beneficiarios.dto.BeneficiarioResponseDTO;
 import br.com.socialconnect.api.beneficiarios.model.Beneficiario;
 import br.com.socialconnect.api.beneficiarios.repository.BeneficiarioRepository;
+import br.com.socialconnect.api.exception.CpfDuplicadoException;
+import br.com.socialconnect.api.exception.RecursoNaoEncontradoException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 
@@ -26,7 +26,7 @@ public class BeneficiarioService {
     public Page<BeneficiarioResponseDTO> listar(String nome, String cpf, Pageable pageable) {
         Page<Beneficiario> page;
         if (cpf != null && !cpf.isBlank()) {
-            page = repository.findByCpf(cpf, pageable);                        // filtro exato (prioridade)
+            page = repository.findByCpf(normalizarCpf(cpf), pageable);                        // filtro exato (prioridade)
         } else if (nome != null && !nome.isBlank()) {
             page = repository.findByNomeContainingIgnoreCase(nome, pageable);  // filtro parcial
         } else {
@@ -41,12 +41,13 @@ public class BeneficiarioService {
 
     // POST
     public BeneficiarioResponseDTO criar(BeneficiarioRequestDTO dto) {
-        if (repository.existsByCpf(dto.cpf())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "CPF já cadastrado");
+        String cpf = normalizarCpf(dto.cpf());
+        if (repository.existsByCpf(cpf)) {
+            throw new CpfDuplicadoException(cpf);
         }
         Beneficiario entity = Beneficiario.builder()
                 .nome(dto.nome())
-                .cpf(dto.cpf())
+                .cpf(cpf)
                 .telefone(dto.telefone())
                 .endereco(dto.endereco())
                 .situacaoVulnerabilidade(dto.situacaoVulnerabilidade())
@@ -58,11 +59,12 @@ public class BeneficiarioService {
     // PUT (substituição total)
     public BeneficiarioResponseDTO atualizar(Long idBeneficiario, BeneficiarioRequestDTO dto) {
         Beneficiario entity = buscarEntidade(idBeneficiario);
-        if (!entity.getCpf().equals(dto.cpf()) && repository.existsByCpf(dto.cpf())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "CPF já cadastrado");
+        String cpf = normalizarCpf(dto.cpf());
+        if (!entity.getCpf().equals(cpf) && repository.existsByCpf(cpf)) {
+            throw new CpfDuplicadoException(cpf);
         }
         entity.setNome(dto.nome());
-        entity.setCpf(dto.cpf());
+        entity.setCpf(cpf);
         entity.setTelefone(dto.telefone());
         entity.setEndereco(dto.endereco());
         entity.setSituacaoVulnerabilidade(dto.situacaoVulnerabilidade());
@@ -81,16 +83,19 @@ public class BeneficiarioService {
 
     public void deletar(Long idBeneficiario) {
         if (!repository.existsById(idBeneficiario)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "Beneficiário não encontrado: " + idBeneficiario);
+            throw new RecursoNaoEncontradoException("Beneficiário não encontrado: " + idBeneficiario);
         }
         repository.deleteById(idBeneficiario);
     }
 
     private Beneficiario buscarEntidade(Long idBeneficiario) {
         return repository.findById(idBeneficiario)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Beneficiário não encontrado: " + idBeneficiario));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Beneficiário não encontrado: " + idBeneficiario));
+    }
+
+    // CPF é sempre gravado só com dígitos, para a checagem de duplicidade não depender da máscara
+    private String normalizarCpf(String cpf) {
+        return cpf.replaceAll("\\D", "");
     }
 
     // Mapeador Entity -> Response DTO
