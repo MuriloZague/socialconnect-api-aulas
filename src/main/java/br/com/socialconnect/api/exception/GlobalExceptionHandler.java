@@ -2,6 +2,7 @@ package br.com.socialconnect.api.exception;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +50,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ProblemDetail> handleTipoParametro(MethodArgumentTypeMismatchException ex, WebRequest request) {
         return build(HttpStatus.BAD_REQUEST, "parametro-invalido", "Parâmetro inválido",
                 mensagem("erro.parametro.invalido", ex.getName()), request, List.of());
+    }
+
+    // 400 - ordenação por campo inexistente (ex: sort=abc)
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ResponseEntity<ProblemDetail> handleOrdenacaoInvalida(PropertyReferenceException ex, WebRequest request) {
+        return build(HttpStatus.BAD_REQUEST, "ordenacao-invalida", "Ordenação inválida",
+                mensagem("erro.ordenacao.invalida", ex.getPropertyName()), request, List.of());
     }
 
     // 409 - CPF duplicado
