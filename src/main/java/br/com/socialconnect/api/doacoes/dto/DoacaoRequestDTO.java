@@ -1,6 +1,7 @@
 package br.com.socialconnect.api.doacoes.dto;
 
 import br.com.socialconnect.api.doacoes.model.TipoDoacao;
+import br.com.socialconnect.api.validation.DataNaoFutura;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -18,6 +19,7 @@ public record DoacaoRequestDTO(
 
         @Schema(description = "Data em que a doação foi recebida", example = "2026-09-14")
         @NotNull(message = "{NotNull.dataDoacao}")
+        @DataNaoFutura(message = "{DataNaoFutura.dataDoacao}")
         LocalDate dataDoacao,
 
         @Schema(description = "Valor estimado/monetário da doação", example = "100.00")
