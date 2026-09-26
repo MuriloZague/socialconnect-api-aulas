@@ -23,6 +23,9 @@ Para cada aula ou entrega, registre abaixo:
 | 11/09/2026 | Aula 05 | Claude | "Como é a sintaxe do Java Record para instanciar um DTO a partir de uma Entity usando o construtor?" | Usado como referência do trecho de código para fazer o mapeamento manual `new BeneficiarioResponseDTO(...)` |
 | 14/09/2026 | Aula 06 | Claude | "Por que a minha validação @NotBlank não está disparando no Controller mesmo com as anotações no DTO?" | Usado para diagnosticar o erro e lembrar de adicionar a anotação `@Valid` antes do `@RequestBody` na assinatura do método. |
 | 14/09/2026 | Aula 06 | Claude | "Como usar o springDoc" | Usado para entender documentação. |
+| 25/09/2026 | Aula 07 | Claude | "Como funciona a anotação @Testcontainers e a declaração estática do PostgreSQLContainer no JUnit 5?" | Usado como referência para compreender o ciclo de vida do contentor Docker durante a execução dos teste. |
+| 25/09/2026 | Aula 07 | ChatGPT | "Tenho a lógica do teste pronta, mas estou na dúvida em qual bloco (Arrange ou Act) deve ficar a chamada do assertThrows para exceções. Como estruturar?" | Usado para entender como aplicar o padrão AAA corretamente quando o teste espera que uma exceção seja lançada. |
+| 25/09/2026 | Aula 07 | Claude | "Como posso usar o Mockito.verify() no bloco ASSERT para garantir que o método save() do repositório foi chamado exatamente 1 vez?" | Adaptado para estruturar a verificação de comportamento dos mocks na etapa de Assert. |
 
 ---
 
