@@ -12,10 +12,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,7 +43,26 @@ public class BeneficiarioController {
             @RequestParam(required = false) String nome,
             @Parameter(description = "CPF para filtrar (exato)", example = "52998224725")
             @RequestParam(required = false) String cpf,
-            @ParameterObject @PageableDefault(size = 10, sort = "nome") Pageable pageable) {
+            @Parameter(description = "Número da página (começa em 0)", example = "0")
+            @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Quantidade de registros por página", example = "10")
+            @RequestParam(defaultValue = "10") int size,
+            @Parameter(description = "Ordenação no formato campo,direção", example = "idBeneficiario,asc")
+            @RequestParam(defaultValue = "idBeneficiario,asc") String sort) {
+
+        // Sanitiza o parâmetro sort (remove colchetes, aspas, espaços)
+        String sortLimpo = sort.replaceAll("[\\[\\]\" ]", "");
+
+        // Divide em campo e direção
+        String[] sortParts = sortLimpo.split(",");
+        String campo = sortParts[0];
+        Sort.Direction direcao = sortParts.length > 1 && sortParts[1].equalsIgnoreCase("desc")
+                ? Sort.Direction.DESC
+                : Sort.Direction.ASC;
+
+        // Cria o Pageable manualmente
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direcao, campo));
+
         return ResponseEntity.ok(service.listar(nome, cpf, pageable));
     }
 
