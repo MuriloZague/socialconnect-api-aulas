@@ -9,7 +9,7 @@ public class DataNaoFuturaValidator implements ConstraintValidator<DataNaoFutura
 
     @Override
     public boolean isValid(LocalDate data, ConstraintValidatorContext context) {
-        if (data == null) return true; // @NotNull cuida da obrigatoriedade
+        if (data == null) return true;
         return !data.isAfter(LocalDate.now());
     }
 }

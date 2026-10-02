@@ -22,13 +22,12 @@ public class BeneficiarioService {
         this.repository = repository;
     }
 
-    // Listar com paginação e filtros opcionais
     public Page<BeneficiarioResponseDTO> listar(String nome, String cpf, Pageable pageable) {
         Page<Beneficiario> page;
         if (cpf != null && !cpf.isBlank()) {
-            page = repository.findByCpf(normalizarCpf(cpf), pageable);                        // filtro exato (prioridade)
+            page = repository.findByCpf(normalizarCpf(cpf), pageable);
         } else if (nome != null && !nome.isBlank()) {
-            page = repository.findByNomeContainingIgnoreCase(nome, pageable);  // filtro parcial
+            page = repository.findByNomeContainingIgnoreCase(nome, pageable);
         } else {
             page = repository.findAll(pageable);
         }
@@ -56,7 +55,7 @@ public class BeneficiarioService {
         return toResponseDTO(repository.save(entity));
     }
 
-    // PUT (substituição total)
+    // PUT altera tudo
     public BeneficiarioResponseDTO atualizar(Long idBeneficiario, BeneficiarioRequestDTO dto) {
         Beneficiario entity = buscarEntidade(idBeneficiario);
         String cpf = normalizarCpf(dto.cpf());
@@ -71,13 +70,17 @@ public class BeneficiarioService {
         return toResponseDTO(repository.save(entity));
     }
 
-    // PATCH (atualiza apenas os campos não-nulos)
+    // PATCH so campo nao nulos alterados na requisicao
     public BeneficiarioResponseDTO atualizarParcial(Long idBeneficiario, BeneficiarioPatchDTO dto) {
         Beneficiario entity = buscarEntidade(idBeneficiario);
-        if (dto.nome() != null) entity.setNome(dto.nome());
-        if (dto.telefone() != null) entity.setTelefone(dto.telefone());
-        if (dto.endereco() != null) entity.setEndereco(dto.endereco());
-        if (dto.situacaoVulnerabilidade() != null) entity.setSituacaoVulnerabilidade(dto.situacaoVulnerabilidade());
+        if (dto.nome() != null)
+            entity.setNome(dto.nome());
+        if (dto.telefone() != null)
+            entity.setTelefone(dto.telefone());
+        if (dto.endereco() != null)
+            entity.setEndereco(dto.endereco());
+        if (dto.situacaoVulnerabilidade() != null)
+            entity.setSituacaoVulnerabilidade(dto.situacaoVulnerabilidade());
         return toResponseDTO(repository.save(entity));
     }
 
@@ -93,17 +96,14 @@ public class BeneficiarioService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Beneficiário não encontrado: " + idBeneficiario));
     }
 
-    // CPF é sempre gravado só com dígitos, para a checagem de duplicidade não depender da máscara
     private String normalizarCpf(String cpf) {
         return cpf.replaceAll("\\D", "");
     }
 
-    // Mapeador Entity -> Response DTO
     private BeneficiarioResponseDTO toResponseDTO(Beneficiario e) {
         return new BeneficiarioResponseDTO(
                 e.getIdBeneficiario(), e.getNome(), e.getCpf(),
                 e.getTelefone(), e.getEndereco(),
-                e.getSituacaoVulnerabilidade(), e.getDataCadastro()
-        );
+                e.getSituacaoVulnerabilidade(), e.getDataCadastro());
     }
 }

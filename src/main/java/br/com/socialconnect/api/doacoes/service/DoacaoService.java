@@ -40,7 +40,6 @@ public class DoacaoService {
         return toResponseDTO(buscarEntidade(idDoacao));
     }
 
-    // POST
     @Transactional
     public DoacaoResponseDTO criar(DoacaoRequestDTO dto) {
         Doador doador = buscarDoador(dto.idDoador());
@@ -54,7 +53,6 @@ public class DoacaoService {
         return toResponseDTO(doacaoRepository.save(doacao));
     }
 
-    // PUT (substituição total)
     @Transactional
     public DoacaoResponseDTO atualizar(Long idDoacao, DoacaoRequestDTO dto) {
         Doacao doacao = buscarEntidade(idDoacao);
@@ -66,14 +64,17 @@ public class DoacaoService {
         return toResponseDTO(doacaoRepository.save(doacao));
     }
 
-    // PATCH (atualiza apenas os campos não-nulos)
     @Transactional
     public DoacaoResponseDTO atualizarParcial(Long idDoacao, DoacaoPatchDTO dto) {
         Doacao doacao = buscarEntidade(idDoacao);
-        if (dto.dataDoacao() != null) doacao.setDataDoacao(dto.dataDoacao());
-        if (dto.valor() != null) doacao.setValor(dto.valor());
-        if (dto.tipo() != null) doacao.setTipo(dto.tipo());
-        if (dto.descricao() != null) doacao.setDescricao(dto.descricao());
+        if (dto.dataDoacao() != null)
+            doacao.setDataDoacao(dto.dataDoacao());
+        if (dto.valor() != null)
+            doacao.setValor(dto.valor());
+        if (dto.tipo() != null)
+            doacao.setTipo(dto.tipo());
+        if (dto.descricao() != null)
+            doacao.setDescricao(dto.descricao());
         return toResponseDTO(doacaoRepository.save(doacao));
     }
 
@@ -104,7 +105,6 @@ public class DoacaoService {
                 d.getDataDoacao(),
                 d.getValor(),
                 d.getTipo(),
-                d.getDescricao()
-        );
+                d.getDescricao());
     }
 }

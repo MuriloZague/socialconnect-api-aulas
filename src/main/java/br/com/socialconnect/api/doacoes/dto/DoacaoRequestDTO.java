@@ -10,7 +10,6 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-// DTO de ENTRADA para POST e PUT
 @Schema(description = "Dados para registrar ou substituir uma doação")
 public record DoacaoRequestDTO(
         @Schema(description = "ID do doador", example = "1")

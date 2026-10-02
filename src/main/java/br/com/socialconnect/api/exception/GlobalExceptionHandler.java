@@ -34,6 +34,14 @@ public class GlobalExceptionHandler {
         List<ProblemDetail.FieldError> errors = ex.getBindingResult().getFieldErrors().stream()
                 .map(e -> new ProblemDetail.FieldError(e.getField(), e.getDefaultMessage()))
                 .toList();
+        // Se a única falha é a regra de negócio do estoque, o corpo está bem formado: 422, não 400
+        boolean somenteEstoqueNegativo = ex.getBindingResult().getErrorCount() > 0
+                && ex.getBindingResult().getAllErrors().stream()
+                .allMatch(e -> "EstoqueNaoNegativo".equals(e.getCode()));
+        if (somenteEstoqueNegativo) {
+            return build(HttpStatus.UNPROCESSABLE_CONTENT, "estoque-negativo", "Estoque negativo",
+                    mensagem("produto.estoque.negativo"), request, errors);
+        }
         return build(HttpStatus.BAD_REQUEST, "validacao", "Erro de validação",
                 mensagem("erro.validacao"), request, errors);
     }
@@ -64,6 +72,21 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ProblemDetail> handleCpfDuplicado(CpfDuplicadoException ex, WebRequest request) {
         return build(HttpStatus.CONFLICT, "cpf-duplicado", "CPF já cadastrado",
                 mensagem("cpf.duplicado", ex.getCpf()), request, List.of());
+    }
+
+    // 409 - nome de produto duplicado
+    @ExceptionHandler(NomeProdutoDuplicadoException.class)
+    public ResponseEntity<ProblemDetail> handleNomeProdutoDuplicado(NomeProdutoDuplicadoException ex, WebRequest request) {
+        return build(HttpStatus.CONFLICT, "produto-duplicado", "Produto já cadastrado",
+                mensagem("produto.nome.duplicado", ex.getNome()), request, List.of());
+    }
+
+    // 422 - regra de negócio: estoque não pode ficar negativo
+    @ExceptionHandler(EstoqueNegativoException.class)
+    public ResponseEntity<ProblemDetail> handleEstoqueNegativo(EstoqueNegativoException ex, WebRequest request) {
+        return build(HttpStatus.UNPROCESSABLE_CONTENT, "estoque-negativo", "Estoque negativo",
+                mensagem("produto.estoque.negativo"), request,
+                List.of(new ProblemDetail.FieldError("estoqueAtual", mensagem("produto.estoque.negativo"))));
     }
 
     // 404 - recurso não encontrado

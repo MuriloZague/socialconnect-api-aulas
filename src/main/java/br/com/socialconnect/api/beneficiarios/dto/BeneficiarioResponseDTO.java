@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
 
-// DTO de SAÍDA: inclui campos gerados pelo servidor
 @Schema(description = "Beneficiário retornado pela API")
 public record BeneficiarioResponseDTO(
         @Schema(description = "Identificador do beneficiário", example = "1")

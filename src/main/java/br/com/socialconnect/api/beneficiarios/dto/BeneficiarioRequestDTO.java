@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-// DTO de ENTRADA: apenas campos que o cliente pode enviar
 @Schema(description = "Dados para cadastrar ou substituir um beneficiário")
 public record BeneficiarioRequestDTO(
         @Schema(description = "Nome completo do beneficiário", example = "Maria da Silva")

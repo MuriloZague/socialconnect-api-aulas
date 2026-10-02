@@ -9,7 +9,6 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-// DTO para PATCH: todos os campos opcionais
 @Schema(description = "Campos para atualização parcial de uma doação")
 public record DoacaoPatchDTO(
         @Schema(example = "2026-09-14")

@@ -6,7 +6,6 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 
-// Filtros dinâmicos: cada filtro nulo vira "sem restrição"
 public final class DoacaoSpecifications {
 
     private DoacaoSpecifications() {
