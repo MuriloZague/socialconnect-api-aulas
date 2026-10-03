@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação A1 - Módulo de Produtos | SocialConnect API</title>
+    <style>
+        :root {
+            --bg-color: #1e1e1e; --sidebar-bg: #252526; --text-color: #d4d4d4;
+            --accent-color: #007acc; --highlight-bg: #2d2d30;
+            --warning-bg: #3a2a00; --warning-border: #ffa500;
+            --success-bg: #1a3a1a; --success-border: #4caf50;
+            --info-bg: #1a2a3a; --info-border: #2196f3;
+            --danger-bg: #3a1a1a; --danger-border: #f44336;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color); color: var(--text-color);
+            line-height: 1.8; display: flex; min-height: 100vh;
+        }
+        nav {
+            width: 300px; background-color: var(--sidebar-bg); padding: 20px;
+            position: fixed; height: 100vh; overflow-y: auto; border-right: 1px solid #333;
+        }
+        nav h2 {
+            font-size: 1.2rem; color: var(--accent-color); margin-bottom: 20px;
+            border-bottom: 2px solid var(--accent-color); padding-bottom: 10px;
+        }
+        nav ul { list-style: none; }
+        nav li { margin-bottom: 6px; }
+        nav a {
+            color: var(--text-color); text-decoration: none; font-size: 0.85rem;
+            display: block; padding: 6px 8px; border-radius: 4px; transition: background 0.2s;
+        }
+        nav a:hover { background-color: var(--highlight-bg); color: #fff; }
+        nav .section-title {
+            color: #888; font-size: 0.75rem; text-transform: uppercase;
+            margin-top: 15px; margin-bottom: 5px; font-weight: bold;
+        }
+        main { margin-left: 300px; padding: 40px; max-width: 1100px; width: 100%; }
+        h1 { font-size: 2.2rem; margin-bottom: 10px; color: #fff; }
+        .subtitle { font-size: 1.1rem; color: #888; margin-bottom: 30px; }
+        h2 {
+            font-size: 1.8rem; color: var(--accent-color); margin-top: 50px;
+            margin-bottom: 20px; border-left: 4px solid var(--accent-color); padding-left: 15px;
+        }
+        h3 { font-size: 1.4rem; color: #fff; margin: 30px 0 15px 0; border-bottom: 1px solid #444; padding-bottom: 5px; }
+        h4 { font-size: 1.1rem; color: var(--accent-color); margin: 20px 0 10px 0; }
+        p, li { margin-bottom: 10px; }
+        .golden-rule {
+            background-color: var(--warning-bg); border-left: 4px solid var(--warning-border);
+            padding: 20px; margin: 25px 0; border-radius: 4px; font-weight: bold; color: #ffcc00;
+        }
+        .danger-box {
+            background-color: var(--danger-bg); border-left: 4px solid var(--danger-border);
+            padding: 15px; margin: 20px 0; border-radius: 4px;
+        }
+        .info-box {
+            background-color: var(--info-bg); border-left: 4px solid var(--info-border);
+            padding: 15px; margin: 20px 0; border-radius: 4px;
+        }
+        .success-box {
+            background-color: var(--success-bg); border-left: 4px solid var(--success-border);
+            padding: 15px; margin: 20px 0; border-radius: 4px;
+        }
+        .bonus-box {
+            background-color: #2a2a1a; border-left: 4px solid #ffd700;
+            padding: 15px; margin: 20px 0; border-radius: 4px; color: #ffd700;
+        }
+        pre {
+            background-color: #0d0d0d; border: 1px solid #333; border-radius: 6px;
+            padding: 20px; overflow-x: auto; margin: 20px 0; position: relative;
+        }
+        code { font-family: 'Fira Code', 'Consolas', monospace; font-size: 0.9rem; color: #d4d4d4; }
+        .copy-btn {
+            position: absolute; top: 10px; right: 10px; background-color: var(--accent-color);
+            color: white; border: none; padding: 5px 10px; border-radius: 4px;
+            cursor: pointer; font-size: 0.8rem; opacity: 0.7; transition: opacity 0.2s;
+        }
+        .copy-btn:hover { opacity: 1; }
+        table {
+            width: 100%; border-collapse: collapse; margin: 20px 0; background-color: #2d2d30;
+        }
+        th, td { padding: 12px; text-align: left; border: 1px solid #444; }
+        th { background-color: var(--accent-color); color: white; font-weight: bold; }
+        tr:nth-child(even) { background-color: #252526; }
+        .endpoint-box {
+            background-color: #2d2d30; border: 1px solid #444; border-radius: 6px;
+            padding: 12px 16px; margin: 10px 0; font-family: 'Fira Code', monospace; font-size: 0.95rem;
+        }
+        .http-get { color: #61affe; font-weight: bold; }
+        .http-post { color: #49cc90; font-weight: bold; }
+        .http-put { color: #fca130; font-weight: bold; }
+        .http-delete { color: #f93e3e; font-weight: bold; }
+        .badge {
+            display: inline-block; background-color: var(--accent-color); color: white;
+            padding: 3px 10px; border-radius: 12px; font-size: 0.8rem; margin-right: 5px;
+        }
+        footer {
+            margin-top: 60px; padding-top: 20px; border-top: 1px solid #333;
+            text-align: center; color: #666; font-size: 0.9rem;
+        }
+        @media (max-width: 1024px) { nav { width: 250px; } main { margin-left: 250px; padding: 20px; } }
+    </style>
+</head>
+<body>
+
+<nav>
+    <h2>📝 Avaliação A1</h2>
+    <div class="section-title">Informações</div>
+    <ul>
+        <li><a href="#info">📋 Dados da Prova</a></li>
+        <li><a href="#cenario">🏢 Cenário de Negócio</a></li>
+        <li><a href="#entrega">📦 Como Entregar</a></li>
+    </ul>
+    <div class="section-title">Requisitos Obrigatórios</div>
+    <ul>
+        <li><a href="#entidade">1️⃣ Entidade e Persistência (15%)</a></li>
+        <li><a href="#dto">2️⃣ DTOs e Validações (15%)</a></li>
+        <li><a href="#service">3️⃣ Service e Regras (20%)</a></li>
+        <li><a href="#controller">4️⃣ Controller e HTTP (20%)</a></li>
+        <li><a href="#swagger">5️⃣ Swagger/OpenAPI (15%)</a></li>
+        <li><a href="#qualidade">6️⃣ Qualidade do Código (15%)</a></li>
+    </ul>
+    <div class="section-title">Bônus</div>
+    <ul>
+        <li><a href="#bonus">⭐ Testes Automatizados (+25%)</a></li>
+    </ul>
+    <div class="section-title">Políticas</div>
+    <ul>
+        <li><a href="#rubrica">⚖️ Rubrica de Correção</a></li>
+        <li><a href="#ia">🤖 Política de Uso de IA</a></li>
+    </ul>
+</nav>
+
+<main>
+    <h1>Avaliação A1 — Módulo de Produtos</h1>
+    <p class="subtitle">Tópicos Especiais em Sistemas para Internet III | SocialConnect API | Prof. James Campos</p>
+
+    <div class="golden-rule">
+        🏆 REGRA DE OURO DA DISCIPLINA: Sem Swagger completo e navegável = nota reduzida em 30%.
+    </div>
+
+    <section id="info">
+        <h2>📋 Dados da Prova</h2>
+        <table>
+            <tbody>
+                <tr><td><strong>Disciplina:</strong></td><td>ITE005 — Tópicos Especiais em Sistemas para Internet III</td></tr>
+                <tr><td><strong>Avaliação:</strong></td><td>A1 — Desafio Prático Individual</td></tr>
+                <tr><td><strong>Duração:</strong></td><td>4 horas (1 aula)</td></tr>
+                <tr><td><strong>Modalidade:</strong></td><td>Individual (com consulta ao material didático e internet)</td></tr>
+                <tr><td><strong>Repositório Base:</strong></td><td><code>socialconnect-api</code> (fork ou clone do repo da disciplina)</td></tr>
+                <tr><td><strong>Entrega:</strong></td><td>Link do repositório GitHub <strong>pessoal e público</strong> do aluno</td></tr>
+                <tr><td><strong>Prazo:</strong></td><td>Até 23:59 do dia da aula</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section id="cenario">
+        <h2>🏢 Cenário de Negócio</h2>
+        <p>A ONG SocialConnect recebe diariamente doações físicas (alimentos, roupas, itens de higiene). Atualmente, o controle é feito em planilhas, o que gera problemas como:</p>
+        <ul>
+            <li>Estoque negativo (mais saídas que entradas).</li>
+            <li>Falta de alerta quando um produto está abaixo do estoque mínimo.</li>
+            <li>Dificuldade em saber quais produtos precisam ser solicitados aos doadores.</li>
+        </ul>
+        <p>Sua missão é implementar o <strong>módulo de Produtos</strong> da API, permitindo o cadastro, consulta, atualização e remoção de produtos do estoque, com regras de negócio rigorosas.</p>
+    </section>
+
+    <section id="entrega">
+        <h2>📦 Como Entregar</h2>
+        
+        <h3>Passo a passo:</h3>
+        <ol>
+            <li><strong>Crie uma nova branch(avalicao1) no seu repositório público(socialconnect) GitHub pessoal.</strong>
+            
+            </li>
+            <li><strong>Implemente todos os requisitos</strong> no módulo <code>produtos</code>.</li>
+            <li><strong>Rode <code>mvn clean compile</code></strong> e garanta que o projeto compila sem erros.</li>
+            <li><strong>Verifique o Swagger</strong> em <code>http://localhost:8080/swagger-ui.html</code>.</li>
+            <li><strong>Commits descritivos:</strong> Use Conventional Commits (ex: <code>feat(produtos): implementa CRUD</code>).</li>
+            <li><strong>Push para o seu repositório pessoal.</strong></li>
+            <li><strong>Envie o link do repositório</strong> via atividade no Teams.</li>
+        </ol>
+
+        <div class="info-box">
+            <strong>💡 Importante:</strong> O repositório deve ser <strong>público</strong> para facilitar a correção.
+        </div>
+
+        <div class="danger-box">
+            <strong>⚠️ Prazo:</strong> Entregas após 23:59 do dia da aula terão desconto de 10% por hora de atraso.
+        </div>
+    </section>
+
+    <section id="entidade">
+        <h2>1️⃣ Entidade e Persistência (15% da nota)</h2>
+        
+        <h3>Requisitos:</h3>
+        <ul>
+            <li>Criar a Entity <code>Produto.java</code> com os campos abaixo.</li>
+            <li>Criar o script Flyway <code>V4__create_produtos_table.sql</code> (ou próximo número disponível).</li>
+            <li><strong>Padrão obrigatório:</strong> chave primária com prefixo <code>id_</code> (ex: <code>id_produto</code>).</li>
+        </ul>
+
+        <h3>Estrutura da Entity:</h3>
+        <table>
+            <thead>
+                <tr><th>Campo</th><th>Tipo Java</th><th>Tipo SQL</th><th>Restrições</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>idProduto</code></td><td><code>Long</code></td><td><code>BIGINT</code></td><td>PK, auto-incremento</td></tr>
+                <tr><td><code>nome</code></td><td><code>String</code></td><td><code>VARCHAR(150)</code></td><td>NOT NULL, UNIQUE</td></tr>
+                <tr><td><code>categoria</code></td><td><code>CategoriaProduto</code> (enum)</td><td><code>VARCHAR(20)</code></td><td>NOT NULL</td></tr>
+                <tr><td><code>estoqueAtual</code></td><td><code>Integer</code></td><td><code>INT</code></td><td>NOT NULL, >= 0</td></tr>
+                <tr><td><code>estoqueMinimo</code></td><td><code>Integer</code></td><td><code>INT</code></td><td>NOT NULL, >= 0</td></tr>
+                <tr><td><code>unidadeMedida</code></td><td><code>String</code></td><td><code>VARCHAR(20)</code></td><td>NOT NULL (ex: "kg", "unidade")</td></tr>
+                <tr><td><code>dataCadastro</code></td><td><code>LocalDate</code></td><td><code>DATE</code></td><td>NOT NULL</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Enum <code>CategoriaProduto</code>:</h3>
+        <pre><code><span class="kw">public enum</span> <span class="cls">CategoriaProduto</span> {
+    ALIMENTO, ROUPA, HIGIENE, OUTROS
+}</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+    </section>
+
+    <section id="dto">
+        <h2>2️⃣ DTOs e Validações (15% da nota)</h2>
+        
+        <h3>Requisitos:</h3>
+        <ul>
+            <li>Criar <code>ProdutoRequestDTO</code> (entrada) e <code>ProdutoResponseDTO</code> (saída) como <code>record</code>.</li>
+            <li>Aplicar Bean Validation (<code>@NotBlank</code>, <code>@Size</code>, <code>@Min</code>, etc.).</li>
+            <li>Criar pelo menos <strong>uma validação customizada</strong> (sugestão: <code>@EstoqueNaoNegativo</code> ou similar).</li>
+        </ul>
+
+        <h3>Exemplo de <code>ProdutoRequestDTO</code>:</h3>
+        <pre><code><span class="kw">public record</span> <span class="cls">ProdutoRequestDTO</span>(
+    <span class="ann">@NotBlank</span>(message = <span class="str">"{produto.nome.obrigatorio}"</span>)
+    <span class="ann">@Size</span>(max = 150)
+    String nome,
+
+    <span class="ann">@NotNull</span>(message = <span class="str">"{produto.categoria.obrigatoria}"</span>)
+    CategoriaProduto categoria,
+
+    <span class="ann">@Min</span>(value = 0, message = <span class="str">"{produto.estoque.minimo}"</span>)
+    Integer estoqueAtual,
+
+    <span class="ann">@Min</span>(value = 0)
+    Integer estoqueMinimo,
+
+    <span class="ann">@NotBlank</span>
+    <span class="ann">@Size</span>(max = 20)
+    String unidadeMedida
+) {}</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+    </section>
+
+    <section id="service">
+        <h2>3️⃣ Service e Regras de Negócio (20% da nota)</h2>
+        
+        <h3>Regras Obrigatórias:</h3>
+        <ol>
+            <li><strong>Estoque não negativo:</strong> O sistema DEVE rejeitar qualquer operação que resulte em <code>estoqueAtual &lt; 0</code>. Retornar <code>422 Unprocessable Entity</code> com Problem Details.</li>
+            <li><strong>Alerta de estoque baixo:</strong> O <code>ProdutoResponseDTO</code> DEVE incluir um campo booleano <code>estoqueBaixo</code> que é <code>true</code> quando <code>estoqueAtual &lt; estoqueMinimo</code>.</li>
+            <li><strong>Nome único:</strong> Não permitir cadastrar produto com nome já existente. Retornar <code>409 Conflict</code>.</li>
+        </ol>
+
+        <h3>Métodos obrigatórios do Service:</h3>
+        <pre><code><span class="kw">public interface</span> <span class="cls">ProdutoService</span> {
+    Page&lt;ProdutoResponseDTO&gt; listar(String nome, CategoriaProduto categoria, Pageable pageable);
+    ProdutoResponseDTO buscarPorId(Long id);
+    ProdutoResponseDTO criar(ProdutoRequestDTO dto);
+    ProdutoResponseDTO atualizar(Long id, ProdutoRequestDTO dto);
+    <span class="kw">void</span> deletar(Long id);
+}</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+    </section>
+
+    <section id="controller">
+        <h2>4️⃣ Controller e Semântica HTTP (20% da nota)</h2>
+        
+        <h3>Endpoints Obrigatórios:</h3>
+        
+        <div class="endpoint-box">
+            <span class="http-get">GET</span> /api/v1/produtos?page=0&size=10&sort=nome,asc&categoria=ALIMENTO
+        </div>
+        <p>Retorna lista paginada. Filtros opcionais: <code>nome</code> (parcial) e <code>categoria</code>.</p>
+
+        <div class="endpoint-box">
+            <span class="http-get">GET</span> /api/v1/produtos/{id_produto}
+        </div>
+        <p>Retorna <code>200 OK</code> com o produto, ou <code>404 Not Found</code> com Problem Details.</p>
+
+        <div class="endpoint-box">
+            <span class="http-post">POST</span> /api/v1/produtos
+        </div>
+        <p>Cria produto. Retorna <code>201 Created</code> com cabeçalho <code>Location</code>. Possíveis erros: <code>400</code>, <code>409</code>, <code>422</code>.</p>
+
+        <div class="endpoint-box">
+            <span class="http-put">PUT</span> /api/v1/produtos/{id_produto}
+        </div>
+        <p>Atualização total. Retorna <code>200 OK</code>. Possíveis erros: <code>400</code>, <code>404</code>, <code>409</code>, <code>422</code>.</p>
+
+        <div class="endpoint-box">
+            <span class="http-delete">DELETE</span> /api/v1/produtos/{id_produto}
+        </div>
+        <p>Remove produto. Retorna <code>204 No Content</code> ou <code>404 Not Found</code>.</p>
+
+        <h3>Exemplo de Resposta (ProdutoResponseDTO):</h3>
+        <pre><code>{
+  <span class="str">"idProduto"</span>: 1,
+  <span class="str">"nome"</span>: <span class="str">"Arroz 5kg"</span>,
+  <span class="str">"categoria"</span>: <span class="str">"ALIMENTO"</span>,
+  <span class="str">"estoqueAtual"</span>: 3,
+  <span class="str">"estoqueMinimo"</span>: 10,
+  <span class="str">"unidadeMedida"</span>: <span class="str">"unidade"</span>,
+  <span class="str">"dataCadastro"</span>: <span class="str">"2026-09-18"</span>,
+  <span class="str">"estoqueBaixo"</span>: <span class="kw">true</span>  <span class="cmt">// ← 3 &lt; 10</span>
+}</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+    </section>
+
+    <section id="swagger">
+        <h2>5️⃣ Swagger/OpenAPI (15% da nota)</h2>
+        
+        <div class="golden-rule">
+            🏆 Sem Swagger = -30% na nota final.
+        </div>
+
+        <h3>Requisitos:</h3>
+        <ul>
+            <li>Todos os endpoints devem estar documentados com <code>@Tag</code>, <code>@Operation</code>, <code>@ApiResponse</code>.</li>
+            <li>DTOs devem ter exemplos via <code>@Schema(example = "...")</code>.</li>
+            <li>O Swagger UI deve estar acessível em <code>http://localhost:8080/swagger-ui.html</code>.</li>
+            <li>Deve ser possível testar todos os endpoints pelo Swagger.</li>
+        </ul>
+    </section>
+
+    <section id="qualidade">
+        <h2>6️⃣ Qualidade do Código (15% da nota)</h2>
+        
+        <h3>Critérios avaliados:</h3>
+        <ul>
+            <li><strong>Organização:</strong> Estrutura de pacotes clara (controller, service, repository, dto, model).</li>
+            <li><strong>Injeção de dependência:</strong> Via construtor com campos <code>final</code> (sem <code>@Autowired</code> em campos).</li>
+            <li><strong>Nomenclatura:</strong> Variáveis e métodos com nomes descritivos em camelCase.</li>
+            <li><strong>Commits:</strong> Mensagens descritivas seguindo Conventional Commits.</li>
+            <li><strong>README:</strong> Documentação básica do projeto (como rodar, endpoints principais).</li>
+        </ul>
+    </section>
+
+    <section id="bonus">
+        <h2>⭐ Bônus: Testes Automatizados (+25% da nota)</h2>
+        
+        <div class="bonus-box">
+            <strong>🎁 Bônus opcional:</strong> Implementar testes pode aumentar sua nota em até 25% (nota final limitada a 10,0).
+        </div>
+
+        <h3>Teste Unitário (+10%):</h3>
+        <ul>
+            <li>Criar <code>ProdutoServiceTest.java</code>.</li>
+            <li>Usar <code>@ExtendWith(MockitoExtension.class)</code>.</li>
+            <li>Seguir padrão AAA com comentários explícitos.</li>
+            <li>Cenários mínimos:
+                <ul>
+                    <li><code>deveCriarProdutoQuandoDadosValidos</code></li>
+                    <li><code>deveLancarExcecaoQuandoEstoqueNegativo</code></li>
+                    <li><code>deveLancarExcecaoQuandoNomeDuplicado</code></li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>Teste de Integração (+15%):</h3>
+        <ul>
+            <li>Criar <code>ProdutoControllerIntegrationTest.java</code>.</li>
+            <li>Usar <code>@SpringBootTest(webEnvironment = RANDOM_PORT)</code> + <code>@Testcontainers</code>.</li>
+            <li>PostgreSQL 17 via Testcontainers.</li>
+            <li>Cenários mínimos:
+                <ul>
+                    <li><code>deveCriarProdutoQuandoDadosValidos</code> (espera 201)</li>
+                    <li><code>deveRetornar409QuandoNomeDuplicado</code></li>
+                    <li><code>deveRetornar422QuandoEstoqueNegativo</code></li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="success-box">
+            <strong>✅ Exemplo de cálculo de nota:</strong>
+            <ul style="margin-top: 10px;">
+                <li>Nota base (sem testes): 80/100</li>
+                <li>Bônus testes unitários: +10</li>
+                <li>Bônus testes integração: +15</li>
+                <li>Nota final: 80 + 10 + 15 = 105 → <strong>Limitado a 100 (10,0)</strong></li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="rubrica">
+        <h2>⚖️ Rubrica de Correção</h2>
+        
+        <table>
+            <thead>
+                <tr><th>Critério</th><th>Peso</th><th>O que será avaliado</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Entidade + Flyway</td><td>15%</td><td>Entity correta, migration com padrão <code>id_</code>, Flyway funcionando</td></tr>
+                <tr><td>DTOs + Validações</td><td>15%</td><td>Records, Bean Validation, validação customizada, i18n</td></tr>
+                <tr><td>Service + Regras</td><td>20%</td><td>Estoque não negativo, alerta de estoque baixo, nome único</td></tr>
+                <tr><td>Controller + HTTP</td><td>20%</td><td>Semântica HTTP correta, Problem Details (RFC 7807)</td></tr>
+                <tr><td>Swagger/OpenAPI</td><td>15%</td><td>Anotações, exemplos, navegabilidade</td></tr>
+                <tr><td>Qualidade do Código</td><td>15%</td><td>Organização, injeção de dependência, commits, README</td></tr>
+                <tr><td><strong>TOTAL BASE</strong></td><td><strong>100%</strong></td><td></td></tr>
+            </tbody>
+        </table>
+
+        <h3>Bônus (opcional):</h3>
+        <table>
+            <thead>
+                <tr><th>Critério</th><th>Bônus</th><th>O que será avaliado</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Testes Unitários</td><td>+10%</td><td>Mockito, padrão AAA, cenários de sucesso e erro</td></tr>
+                <tr><td>Testes de Integração</td><td>+15%</td><td>Testcontainers, cenários de sucesso e erro</td></tr>
+                <tr><td><strong>BÔNUS MÁXIMO</strong></td><td><strong>+25%</strong></td><td></td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section id="ia">
+        <h2>🤖 Política de Uso de IA</h2>
+        
+        <p>Conforme o arquivo <code>AI_USAGE.md</code> do repositório base, o uso de IA é <strong>permitido e incentivado</strong>, desde que:</p>
+        
+        <ol>
+            <li><strong>Transparência total:</strong> Você deve documentar no README ou em um arquivo <code>AI_USAGE.md</code> como usou a IA (quais prompts, quais ferramentas).</li>
+            <li><strong>Compreensão:</strong> Você deve ser capaz de explicar cada linha do código entregue.</li>
+            <li><strong>Autenticidade:</strong> O código deve refletir seu entendimento, não apenas copiar/colar.</li>
+        </ol>
+
+        <h3>Template de Declaração de Uso de IA:</h3>
+        <pre><code><span class="cmt">## Declaração de Uso de IA (A1)</span>
+
+<span class="cmt">### Ferramentas utilizadas:</span>
+- [ ] ChatGPT / Claude / Gemini
+- [ ] Copilot / Codeium
+- [ ] Nenhuma
+
+<span class="cmt">### Como utilizei:</span>
+- Usei IA para gerar a estrutura inicial do DTO.
+- Usei IA para debugar um erro de Flyway.
+- Usei IA para revisar meus testes.
+
+<span class="cmt">### O que eu entendo 100%:</span>
+- A lógica de validação de estoque negativo.
+- A configuração do Testcontainers.
+- O padrão AAA nos testes.
+
+<span class="cmt">### O que precisei estudar mais:</span>
+- A anotação @DataJpaTest.</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+
+        <div class="success-box">
+            <strong>✅ Lembre-se:</strong> A IA é sua assistente, não sua substituta. O aprendizado é seu.
+        </div>
+    </section>
+
+    <footer>
+        <p>Material de avaliação | Disciplina Tópicos Especiais em Sistemas para Internet III | SocialConnect API | 2026-2<br>
+        Prof. James Campos | Fatec</p>
+    </footer>
+</main>
+
+<script>
+    function copyCode(button) {
+        const pre = button.parentElement;
+        const code = pre.querySelector('code').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+            const originalText = button.innerText;
+            button.innerText = 'Copiado!';
+            button.style.backgroundColor = '#4caf50';
+            setTimeout(() => { button.innerText = originalText; button.style.backgroundColor = ''; }, 2000);
+        });
+    }
+    document.querySelectorAll('nav a').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+</script>
+</body>
+</html>

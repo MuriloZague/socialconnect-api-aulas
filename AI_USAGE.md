@@ -36,6 +36,33 @@ Para cada aula ou entrega, registre abaixo:
 | 25/09/2026 | Aula 07 | Claude | "Preencha o modelo de pull request (`.github/pull_request_template.md`) com as mudanças desta entrega" | Descrição do PR `.github/pull-requests/PR-aula-07.md` gerada integralmente pelo Claude a partir das mudanças da entrega; revisada por mim. |
 | 25/09/2026 | Correção GET beneficiários (pós Aula 07) | Claude | "O professor mandou uma correção da busca por beneficiários (GET) pelo Swagger, não entendi o que significa" | Usado para entender o problema do `Pageable` no Swagger UI e o código enviado pelo professor. A aplicação do código do professor e o tratamento 400 para ordenação por campo inexistente também foram feitos com o Claude e revisados por mim. |
 | 25/09/2026 | Correção GET beneficiários (pós Aula 07) | Claude | "Preencha o modelo de pull request (`.github/pull_request_template.md`) com as mudanças desta entrega" | Descrição do PR `.github/pull-requests/PR-fix-busca-beneficiarios-swagger.md` gerada integralmente pelo Claude a partir das mudanças da entrega; revisada por mim. |
+| 02/10/2026 | Avaliação A1 | Claude | "Crie um migration v4 para a entidade produtos do projeto" | Claude criou e preencheu a migration 4 ("V4__create_produtos_table.sql"), revisado por mim |
+| 02/10/2026 | Avaliação A1 | Claude | "Preencha as mensagens de erro do produto para mim" | Claude preencheu as mensagens de erros e validações da entity de produto para mim |
+| 02/10/2026 | Avaliação A1 | Claude | "Por que o meu endpoint POST está retornando 500 em vez de 409 quando o banco acusa erro de unddade no nome do produto?" | Usado para entender como capturar a exceção de integridade no @RestControllerAdvice e retornar o status HTTP 409 Conflict correto com Problem Details |
+| 02/10/2026 | Avaliação A1 | Claude | "Qual o código HTTP correto para retornar em regras de negócio violadas quando a requisição está bem formatada mas não pode ser processada (ex: estoque negativo)?" | Usado para confirmar a aplicação do status HTTP 422 Unprocessable Entity. |
+| 02/10/2026 | Avaliação A1 | Claude | "Preencha os modelos README, pull request da av1 e adicione os novos tópicos no AI_USAGE.md de acordo como pedido na av1" | Claude alterou e preencheu as docs em md. |
+
+---
+
+## Declaração de Uso de IA (A1)
+
+### Ferramentas utilizadas:
+- [x] ChatGPT / Claude / Gemini
+- [ ] Copilot / Codeium
+- [ ] Nenhuma
+
+### Como utilizei:
+- Usei IA para escrever o migration sql.
+- Usei IA para escrever os erros da entity de Produtos do projeto.
+- Usei IA para atualizar o README e preencher a descrição do PR.
+- Usei IA para tirar dúvidas sobre um erro de requisicao 409.
+
+### O que eu entendo 100%:
+- A lógica de validação de estoque negativo (validação customizada `@EstoqueNaoNegativo` no DTO + checagem no service) e por que ela retorna 422 e não 400.
+- A regra de nome único (409) e o cálculo de `estoqueBaixo` no mapeamento para o DTO de resposta.
+
+### O que precisei estudar mais:
+- Como o `GlobalExceptionHandler` identifica qual anotação de Bean Validation falhou (`FieldError.getCode()`) para trocar o status de 400 para 422.
 
 ---
 

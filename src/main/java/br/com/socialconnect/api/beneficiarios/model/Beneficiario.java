@@ -15,8 +15,8 @@ public class Beneficiario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_beneficiario") // Padrão id_ no banco
-    private Long idBeneficiario;      // camelCase no Java
+    @Column(name = "id_beneficiario")
+    private Long idBeneficiario;
 
     @Column(nullable = false, length = 150)
     private String nome;

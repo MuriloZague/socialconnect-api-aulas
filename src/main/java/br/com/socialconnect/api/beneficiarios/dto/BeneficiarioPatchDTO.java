@@ -3,7 +3,6 @@ package br.com.socialconnect.api.beneficiarios.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
 
-// DTO para PATCH: todos os campos opcionais
 @Schema(description = "Campos para atualização parcial (envie só o que quiser alterar)")
 public record BeneficiarioPatchDTO(
         @Schema(example = "Maria da Silva Santos")
