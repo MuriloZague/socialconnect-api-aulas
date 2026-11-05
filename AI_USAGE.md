@@ -41,7 +41,7 @@ Para cada aula ou entrega, registre abaixo:
 | 02/10/2026 | Avaliação A1 | Claude | "Por que o meu endpoint POST está retornando 500 em vez de 409 quando o banco acusa erro de unddade no nome do produto?" | Usado para entender como capturar a exceção de integridade no @RestControllerAdvice e retornar o status HTTP 409 Conflict correto com Problem Details |
 | 02/10/2026 | Avaliação A1 | Claude | "Qual o código HTTP correto para retornar em regras de negócio violadas quando a requisição está bem formatada mas não pode ser processada (ex: estoque negativo)?" | Usado para confirmar a aplicação do status HTTP 422 Unprocessable Entity. |
 | 02/10/2026 | Avaliação A1 | Claude | "Preencha os modelos README, pull request da av1 e adicione os novos tópicos no AI_USAGE.md de acordo como pedido na av1" | Claude alterou e preencheu as docs em md. |
-| 05/11/2026 | Aula 09 | Claude (Claude Code) | "Faça as aulas 09 e 10 dentro da pasta /aulas, pode criar um novo repositório no GitHub só para essas aulas (criar um frontend para o sistema e aprimorá-lo)" | `CorsConfig` copiado de `aula09.html` e testado pelo Claude; descrição do PR `.github/pull-requests/PR-aula-09.md` e README gerados pelo Claude. O front-end tem registro próprio no repositório `socialconnect-front`. Revisão pelo aluno: **pendente**. |
+| 05/11/2026 | Aula 09 | Claude (Claude Code) | "Faça as aulas 09 e 10 dentro da pasta /aulas, pode criar um novo repositório no GitHub só para essas aulas (criar um frontend para o sistema e aprimorá-lo)" | `CorsConfig` copiado de `aula09.html` e testado pelo Claude; descrição do PR `.github/pull-requests/PR-aula-09.md` e README gerados pelo Claude. O front-end tem registro próprio no repositório `socialconnect-front`. |
 
 ---
 
