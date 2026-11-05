@@ -38,6 +38,10 @@ mvn spring-boot:run
 | OpenAPI (JSON) | http://localhost:8080/api-docs |
 | Console H2 | http://localhost:8080/h2-console (JDBC URL `jdbc:h2:mem:socialconnectdb`, usuário `sa`, sem senha) |
 
+### Front-end
+
+O front-end em React está no repositório [socialconnect-front](https://github.com/MuriloZague/socialconnect-front). O CORS da API libera apenas a origem `http://localhost:5173`.
+
 ### Testes
 
 ```bash
@@ -60,7 +64,7 @@ src/main/java/br/com/socialconnect/api/
 ├── doacoes/         # controller, dto, model, repository, service
 ├── doadores/        # model, repository
 ├── produtos/        # controller, dto, model, repository, service (Avaliação A1)
-├── config/          # i18n e serialização de Page
+├── config/          # i18n, serialização de Page e CORS
 ├── exception/       # GlobalExceptionHandler + Problem Details (RFC 7807)
 └── validation/      # validações customizadas (@CPF, @DataNaoFutura, @EstoqueNaoNegativo)
 
