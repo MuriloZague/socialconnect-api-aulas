@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 09 - Front-end React/TS e Consumo de API</title>
+    <style>
+        :root {
+            --bg-color: #1e1e1e; --sidebar-bg: #252526; --text-color: #d4d4d4;
+            --accent-color: #007acc; --highlight-bg: #2d2d30;
+            --keyword: #569cd6; --string: #ce9178; --class: #4ec9b0;
+            --annotation: #dcdcaa; --comment: #6a9955;
+            --warning-bg: #3a2a00; --warning-border: #ffa500;
+            --success-bg: #1a3a1a; --success-border: #4caf50;
+            --info-bg: #1a2a3a; --info-border: #2196f3;
+            --danger-bg: #3a1a1a; --danger-border: #f44336;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.8; display: flex; min-height: 100vh; }
+        nav { width: 320px; background-color: var(--sidebar-bg); padding: 20px; position: fixed; height: 100vh; overflow-y: auto; border-right: 1px solid #333; }
+        nav h2 { font-size: 1.2rem; color: var(--accent-color); margin-bottom: 20px; border-bottom: 2px solid var(--accent-color); padding-bottom: 10px; }
+        nav ul { list-style: none; }
+        nav li { margin-bottom: 6px; }
+        nav a { color: var(--text-color); text-decoration: none; font-size: 0.85rem; display: block; padding: 6px 8px; border-radius: 4px; transition: background 0.2s; }
+        nav a:hover { background-color: var(--highlight-bg); color: #fff; }
+        nav .section-title { color: #888; font-size: 0.75rem; text-transform: uppercase; margin-top: 15px; margin-bottom: 5px; font-weight: bold; }
+        main { margin-left: 320px; padding: 40px; max-width: 1200px; width: 100%; }
+        h1 { font-size: 2.2rem; margin-bottom: 10px; color: #fff; }
+        .subtitle { font-size: 1.1rem; color: #888; margin-bottom: 30px; }
+        h2 { font-size: 1.8rem; color: var(--accent-color); margin-top: 50px; margin-bottom: 20px; border-left: 4px solid var(--accent-color); padding-left: 15px; }
+        h3 { font-size: 1.4rem; color: #fff; margin: 30px 0 15px 0; border-bottom: 1px solid #444; padding-bottom: 5px; }
+        h4 { font-size: 1.1rem; color: var(--accent-color); margin: 20px 0 10px 0; }
+        p, li { margin-bottom: 10px; }
+        .golden-rule { background-color: var(--warning-bg); border-left: 4px solid var(--warning-border); padding: 20px; margin: 25px 0; border-radius: 4px; font-weight: bold; color: #ffcc00; }
+        .info-box { background-color: var(--info-bg); border-left: 4px solid var(--info-border); padding: 15px; margin: 20px 0; border-radius: 4px; }
+        .success-box { background-color: var(--success-bg); border-left: 4px solid var(--success-border); padding: 15px; margin: 20px 0; border-radius: 4px; }
+        .danger-box { background-color: var(--danger-bg); border-left: 4px solid var(--danger-border); padding: 15px; margin: 20px 0; border-radius: 4px; }
+        pre { background-color: #0d0d0d; border: 1px solid #333; border-radius: 6px; padding: 20px; overflow-x: auto; margin: 20px 0; position: relative; }
+        code { font-family: 'Fira Code', 'Consolas', monospace; font-size: 0.9rem; color: #d4d4d4; }
+        .kw { color: var(--keyword); } .str { color: var(--string); } .cls { color: var(--class); } .ann { color: var(--annotation); } .cmt { color: var(--comment); font-style: italic; }
+        .copy-btn { position: absolute; top: 10px; right: 10px; background-color: var(--accent-color); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; opacity: 0.7; }
+        .copy-btn:hover { opacity: 1; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; background-color: #2d2d30; }
+        th, td { padding: 12px; text-align: left; border: 1px solid #444; }
+        th { background-color: var(--accent-color); color: white; font-weight: bold; }
+        tr:nth-child(even) { background-color: #252526; }
+        .arch-diagram { background-color: #2d2d30; border: 2px solid var(--accent-color); border-radius: 8px; padding: 30px; margin: 30px 0; text-align: center; font-family: 'Fira Code', monospace; }
+        footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid #333; text-align: center; color: #666; font-size: 0.9rem; }
+        @media (max-width: 1024px) { nav { width: 250px; } main { margin-left: 250px; padding: 20px; } }
+    </style>
+</head>
+<body>
+
+<nav>
+    <h2>📚 Aula 09</h2>
+    <div class="section-title">Introdução</div>
+    <ul>
+        <li><a href="#objetivos">🎯 Objetivos</a></li>
+        <li><a href="#arquitetura">🏗️ Arquitetura</a></li>
+    </ul>
+    <div class="section-title">React/TS</div>
+    <ul>
+        <li><a href="#react-basics">🚀 Crash Course</a></li>
+        <li><a href="#components">📦 Componentes</a></li>
+        <li><a href="#hooks">🎣 Hooks</a></li>
+        <li><a href="#axios">🌐 Axios</a></li>
+    </div>
+    <div class="section-title">Integração</div>
+    <ul>
+        <li><a href="#cors">🔧 CORS no Backend</a></li>
+        <li><a href="#setup">🛠️ Setup Front-end</a></li>
+        <li><a href="#service">📡 Service de API</a></li>
+        <li><a href="#types">📋 Tipagem DTOs</a></li>
+        <li><a href="#list">🎨 Componente Listagem</a></li>
+    </div>
+    <div class="section-title">Prática</div>
+    <ul>
+        <li><a href="#desafio">🎯 Desafio em Duplas</a></li>
+        <li><a href="#armadilhas">⚠️ Armadilhas</a></li>
+        <li><a href="#resumo">📝 Resumo</a></li>
+    </ul>
+</nav>
+
+<main>
+    <h1>Aula 09: Front-end (React/TS) e Consumo de API</h1>
+    <p class="subtitle">Tópicos Especiais em Sistemas para Internet III | Workshop Guiado</p>
+
+    <section id="objetivos">
+        <h2>🎯 Objetivos de Aprendizagem</h2>
+        <ul>
+            <li><strong>Criar</strong> um projeto React + TypeScript com Vite.</li>
+            <li><strong>Configurar</strong> o CORS no Spring Boot para permitir consumo do Front-end.</li>
+            <li><strong>Consumir</strong> endpoints da API SocialConnect via Axios.</li>
+            <li><strong>Renderizar</strong> dados em componentes React com tipagem forte.</li>
+            <li><strong>Integrar</strong> a listagem de Beneficiários da API em uma tela real.</li>
+        </ul>
+    </section>
+
+    <section id="arquitetura">
+        <h2>🏗️ Arquitetura da Integração</h2>
+        
+        <div class="arch-diagram">
+            <pre style="border: none; background: transparent;"><code>┌─────────────────┐         ┌─────────────────┐         ┌─────────────────┐
+│   React/TS      │  HTTP   │  Spring Boot    │   SQL   │   PostgreSQL    │
+│   (Front-end)   │ ◄─────► │  (API REST)     │ ◄─────► │   (Banco)       │
+│   Porta 5173    │  JSON   │  Porta 8080     │         │                 │
+└─────────────────┘         └─────────────────┘         └─────────────────┘</code></pre>
+        </div>
+
+        <h3>Fluxo de Dados:</h3>
+        <ol>
+            <li>React faz <code>GET /api/v1/beneficiarios</code></li>
+            <li>Spring Boot retorna JSON com <code>Page&lt;BeneficiarioResponseDTO&gt;</code></li>
+            <li>React renderiza a lista em uma tabela</li>
+        </ol>
+    </section>
+
+    <section id="react-basics">
+        <h2>🚀 Crash Course: React + TypeScript</h2>
+        
+        <h3>O que é React?</h3>
+        <ul>
+            <li>Biblioteca para construir <strong>interfaces de usuário</strong> com componentes reutilizáveis.</li>
+            <li>Usa <strong>JSX</strong> (JavaScript XML) para misturar HTML com JavaScript.</li>
+            <li>Gerencia <strong>estado</strong> com Hooks (<code>useState</code>, <code>useEffect</code>).</li>
+        </ul>
+
+        <h3>Por que TypeScript?</h3>
+        <ul>
+            <li><strong>Tipagem estática</strong>: evita bugs em tempo de compilação.</li>
+            <li><strong>Autocompletar</strong> inteligente na IDE.</li>
+            <li><strong>Contratos claros</strong> entre Front-end e Back-end.</li>
+        </ul>
+    </section>
+
+    <section id="components">
+        <h2>📦 Componentes React: O Básico</h2>
+        
+        <pre><code><span class="cmt">// Um componente funcional simples</span>
+<span class="kw">function</span> <span class="cls">Saudacao</span>({ nome }: { nome: <span class="cls">string</span> }) {
+  <span class="kw">return</span> &lt;h1&gt;Olá, {nome}!&lt;/h1&gt;;
+}
+
+<span class="cmt">// Uso:</span>
+&lt;<span class="cls">Saudacao</span> nome=<span class="str">"Maria"</span> /&gt;</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+
+        <h3>Regras:</h3>
+        <ul>
+            <li>Componentes começam com <strong>letra maiúscula</strong>.</li>
+            <li>Props são tipadas com TypeScript.</li>
+            <li>JSX retorna <strong>UM</strong> elemento raiz (use <code>&lt;&gt;&lt;/&gt;</code> para agrupar).</li>
+        </ul>
+    </section>
+
+    <section id="hooks">
+        <h2>🎣 Hooks: useState e useEffect</h2>
+        
+        <h3>useState: Gerenciar estado local</h3>
+        <pre><code><span class="kw">const</span> [contador, setContador] = <span class="cls">useState</span>(0);
+
+<span class="cmt">// Atualizar:</span>
+setContador(contador + 1);</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+
+        <h3>useEffect: Efeitos colaterais (ex: buscar dados da API)</h3>
+        <pre><code><span class="cls">useEffect</span>(() => {
+  <span class="cmt">// Executa quando o componente monta</span>
+  fetchBeneficiarios();
+}, []); <span class="cmt">// [] = executa apenas uma vez</span></code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+    </section>
+
+    <section id="axios">
+        <h2>🌐 Axios: Cliente HTTP</h2>
+        
+        <h3>Por que Axios e não fetch?</h3>
+        <ul>
+            <li>✅ Sintaxe mais limpa.</li>
+            <li>✅ Conversão automática de JSON.</li>
+            <li>✅ Interceptadores (ex: adicionar token JWT).</li>
+            <li>✅ Tratamento de erros mais intuitivo.</li>
+        </ul>
+
+        <h3>Instalação:</h3>
+        <pre><code>npm install axios</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+    </section>
+
+    <section id="cors">
+        <h2>🔧 Configuração do CORS no Backend</h2>
+        
+        <h3>O Problema:</h3>
+        <p>O navegador <strong>bloqueia</strong> requisições de origens diferentes (porta 5173 → 8080) por segurança.</p>
+
+        <h3>A Solução:</h3>
+        <p>Criar uma classe de configuração no Spring Boot:</p>
+        
+        <pre><code><span class="kw">package</span> br.com.socialconnect.api.config;
+
+<span class="kw">import</span> org.springframework.context.annotation.Configuration;
+<span class="kw">import</span> org.springframework.web.servlet.config.annotation.CorsRegistry;
+<span class="kw">import</span> org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+<span class="ann">@Configuration</span>
+<span class="kw">public class</span> <span class="cls">CorsConfig</span> <span class="kw">implements</span> <span class="cls">WebMvcConfigurer</span> {
+    
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> addCorsMappings(<span class="cls">CorsRegistry</span> registry) {
+        registry.addMapping(<span class="str">"/api/**"</span>)
+            .allowedOrigins(<span class="str">"http://localhost:5173"</span>)
+            .allowedMethods(<span class="str">"GET"</span>, <span class="str">"POST"</span>, <span class="str">"PUT"</span>, <span class="str">"DELETE"</span>, <span class="str">"PATCH"</span>)
+            .allowCredentials(<span class="kw">true</span>);
+    }
+}</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+
+        <div class="info-box">
+            <strong>💡 Onde colocar:</strong> Crie este arquivo em <code>src/main/java/br/com/socialconnect/api/config/CorsConfig.java</code>
+        </div>
+    </section>
+
+    <section id="setup">
+        <h2>🛠️ Setup do Projeto Front-end</h2>
+        
+        <h3>Criar projeto com Vite:</h3>
+        <pre><code><span class="cmt"># No terminal, na pasta onde quer criar o projeto</span>
+npm create vite@latest socialconnect-front -- --template react-ts
+cd socialconnect-front
+npm install
+npm install axios
+npm run dev</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+
+        <h3>Estrutura de pastas:</h3>
+        <pre><code>src/
+ ├── components/     <span class="cmt"># Componentes reutilizáveis</span>
+ ├── services/       <span class="cmt"># Chamadas à API</span>
+ ├── types/          <span class="cmt"># Interfaces TypeScript</span>
+ └── App.tsx         <span class="cmt"># Componente raiz</span></code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+    </section>
+
+    <section id="service">
+        <h2>📡 Criando o Service de API</h2>
+        
+        <p><strong>Arquivo:</strong> <code>src/services/api.ts</code></p>
+        <pre><code><span class="kw">import</span> axios <span class="kw">from</span> <span class="str">'axios'</span>;
+
+<span class="kw">const</span> api = axios.create({
+  baseURL: <span class="str">'http://localhost:8080/api/v1'</span>,
+  headers: {
+    <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>,
+  },
+});
+
+<span class="kw">export default</span> api;</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+    </section>
+
+    <section id="types">
+        <h2>📋 Tipando os DTOs</h2>
+        
+        <p><strong>Arquivo:</strong> <code>src/types/beneficiario.ts</code></p>
+        <pre><code><span class="kw">export interface</span> <span class="cls">Beneficiario</span> {
+  idBeneficiario: <span class="cls">number</span>;
+  nome: <span class="cls">string</span>;
+  cpf: <span class="cls">string</span>;
+  telefone: <span class="cls">string</span>;
+  endereco: <span class="cls">string</span>;
+  situacaoVulnerabilidade: <span class="cls">string</span>;
+  dataCadastro: <span class="cls">string</span>;
+}
+
+<span class="kw">export interface</span> <span class="cls">Page</span>&lt;T&gt; {
+  content: T[];
+  totalElements: <span class="cls">number</span>;
+  totalPages: <span class="cls">number</span>;
+  number: <span class="cls">number</span>;
+  size: <span class="cls">number</span>;
+}</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+    </section>
+
+    <section id="list">
+        <h2>🎨 Componente de Listagem</h2>
+        
+        <p><strong>Arquivo:</strong> <code>src/components/BeneficiarioList.tsx</code></p>
+        <pre><code><span class="kw">import</span> { useEffect, useState } <span class="kw">from</span> <span class="str">'react'</span>;
+<span class="kw">import</span> api <span class="kw">from</span> <span class="str">'../services/api'</span>;
+<span class="kw">import</span> { Beneficiario, Page } <span class="kw">from</span> <span class="str">'../types/beneficiario'</span>;
+
+<span class="kw">export function</span> <span class="cls">BeneficiarioList</span>() {
+  <span class="kw">const</span> [beneficiarios, setBeneficiarios] = <span class="cls">useState</span>&lt;Beneficiario[]&gt;([]);
+  <span class="kw">const</span> [loading, setLoading] = <span class="cls">useState</span>(<span class="kw">true</span>);
+
+  <span class="cls">useEffect</span>(() => {
+    api.get&lt;Page&lt;Beneficiario&gt;&gt;(<span class="str">'/beneficiarios?page=0&size=10'</span>)
+      .then(response => {
+        setBeneficiarios(response.data.content);
+        setLoading(<span class="kw">false</span>);
+      })
+      .catch(error => {
+        console.error(<span class="str">'Erro ao buscar beneficiários:'</span>, error);
+        setLoading(<span class="kw">false</span>);
+      });
+  }, []);
+
+  <span class="kw">if</span> (loading) <span class="kw">return</span> &lt;p&gt;Carregando...&lt;/p&gt;;
+
+  <span class="kw">return</span> (
+    &lt;table&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th&gt;Nome&lt;/th&gt;
+          &lt;th&gt;CPF&lt;/th&gt;
+          &lt;th&gt;Telefone&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        {beneficiarios.map(b => (
+          &lt;tr key={b.idBeneficiario}&gt;
+            &lt;td&gt;{b.nome}&lt;/td&gt;
+            &lt;td&gt;{b.cpf}&lt;/td&gt;
+            &lt;td&gt;{b.telefone}&lt;/td&gt;
+          &lt;/tr&gt;
+        ))}
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  );
+}</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+
+        <h3>Usando no App.tsx:</h3>
+        <pre><code><span class="kw">import</span> { BeneficiarioList } <span class="kw">from</span> <span class="str">'./components/BeneficiarioList'</span>;
+
+<span class="kw">function</span> <span class="cls">App</span>() {
+  <span class="kw">return</span> (
+    &lt;div&gt;
+      &lt;h1&gt;SocialConnect - Beneficiários&lt;/h1&gt;
+      &lt;<span class="cls">BeneficiarioList</span> /&gt;
+    &lt;/div&gt;
+  );
+}
+
+<span class="kw">export default</span> <span class="cls">App</span>;</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+    </section>
+
+    <section id="desafio">
+        <h2>🎯 Desafio em Duplas (45 min)</h2>
+        
+        <div class="success-box">
+            <h3>Missão:</h3>
+            <p>Criar a tela de <strong>Cadastro de Beneficiário</strong> consumindo <code>POST /api/v1/beneficiarios</code>.</p>
+        </div>
+
+        <h3>Requisitos:</h3>
+        <ol>
+            <li>Formulário com campos: nome, CPF, telefone, endereço.</li>
+            <li>Validação básica (campos obrigatórios).</li>
+            <li>Ao submeter, fazer POST para a API.</li>
+            <li>Exibir mensagem de sucesso ou erro.</li>
+            <li>Redirecionar para a listagem após sucesso.</li>
+        </ol>
+
+        <h3>Dica:</h3>
+        <p>Use <code>useState</code> para cada campo do formulário e <code>api.post()</code> para enviar.</p>
+
+        <h3>Exemplo de estrutura:</h3>
+        <pre><code><span class="kw">export function</span> <span class="cls">BeneficiarioForm</span>() {
+  <span class="kw">const</span> [nome, setNome] = <span class="cls">useState</span>(<span class="str">''</span>);
+  <span class="kw">const</span> [cpf, setCpf] = <span class="cls">useState</span>(<span class="str">''</span>);
+  <span class="kw">const</span> [telefone, setTelefone] = <span class="cls">useState</span>(<span class="str">''</span>);
+  <span class="kw">const</span> [endereco, setEndereco] = <span class="cls">useState</span>(<span class="str">''</span>);
+
+  <span class="kw">const</span> handleSubmit = <span class="kw">async</span> (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    <span class="kw">try</span> {
+      <span class="kw">await</span> api.post(<span class="str">'/beneficiarios'</span>, {
+        nome, cpf, telefone, endereco
+      });
+      alert(<span class="str">'Beneficiário criado com sucesso!'</span>);
+      <span class="cmt">// Redirecionar para listagem</span>
+    } <span class="kw">catch</span> (error) {
+      alert(<span class="str">'Erro ao criar beneficiário'</span>);
+    }
+  };
+
+  <span class="kw">return</span> (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input value={nome} onChange={e => setNome(e.target.value)} placeholder=<span class="str">"Nome"</span> /&gt;
+      <span class="cmt">// ... outros campos</span>
+      &lt;button type=<span class="str">"submit"</span>&gt;Cadastrar&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+    </section>
+
+    <section id="armadilhas">
+        <h2>⚠️ Armadilhas Comuns</h2>
+        
+        <table>
+            <thead>
+                <tr><th>Problema</th><th>Causa</th><th>Solução</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>CORS bloqueado</strong></td>
+                    <td>Backend não permite origem 5173</td>
+                    <td>Verifique se o <code>CorsConfig</code> está no Backend</td>
+                </tr>
+                <tr>
+                    <td><strong>Porta errada</strong></td>
+                    <td>React em 5173, API em 8080</td>
+                    <td>Confira o <code>baseURL</code> no <code>api.ts</code></td>
+                </tr>
+                <tr>
+                    <td><strong>useState assíncrono</strong></td>
+                    <td>Estado não atualiza imediatamente</td>
+                    <td>Use <code>useEffect</code> para reagir a mudanças</td>
+                </tr>
+                <tr>
+                    <td><strong>Tipagem fraca</strong></td>
+                    <td>Resposta da API sem tipo</td>
+                    <td>Sempre tipifique: <code>api.get&lt;Page&lt;Beneficiario&gt;&gt;</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Loop infinito</strong></td>
+                    <td>Buscar dados fora do <code>useEffect</code></td>
+                    <td>Use <code>useEffect(() => {...}, [])</code></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section id="resumo">
+        <h2>📝 Resumo da Aula</h2>
+        <ul>
+            <li><strong>React + TS</strong> cria interfaces tipadas e reutilizáveis.</li>
+            <li><strong>Axios</strong> simplifica o consumo de APIs REST.</li>
+            <li><strong>CORS</strong> deve ser configurado no Backend para permitir consumo.</li>
+            <li><strong>useState</strong> gerencia estado local; <strong>useEffect</strong> executa efeitos colaterais.</li>
+            <li><strong>Componentes</strong> são a unidade básica do React.</li>
+        </ul>
+
+        <div class="success-box">
+            <strong>✅ Próxima Aula (10):</strong> UI, Formulários e Acessibilidade<br>
+            <ul style="margin-top: 10px;">
+                <li>Material UI para componentes prontos e acessíveis.</li>
+                <li>React Hook Form + Zod para validação robusta.</li>
+                <li>WCAG 2.1: tornar o Front-end inclusivo.</li>
+                <li>Teste de usabilidade cruzado.</li>
+            </ul>
+        </div>
+    </section>
+
+    <footer>
+        <p>Material de apoio gerado para a disciplina | SocialConnect API | Aula 09</p>
+    </footer>
+</main>
+
+<script>
+    function copyCode(button) {
+        const pre = button.parentElement;
+        const code = pre.querySelector('code').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+            const originalText = button.innerText;
+            button.innerText = 'Copiado!';
+            button.style.backgroundColor = '#4caf50';
+            setTimeout(() => {
+                button.innerText = originalText;
+                button.style.backgroundColor = '';
+            }, 2000);
+        });
+    }
+
+    document.querySelectorAll('nav a').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>
+</body>
+</html>
